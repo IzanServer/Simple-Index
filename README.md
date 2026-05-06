@@ -1,5 +1,5 @@
 # 📁 Simple-Index
-File Indexer based in LiteSpeed ⚡ with PHP
+File Indexer based in the design of LiteSpeed ⚡ with PHP
 
 🚀 Just drag php and _autoindex folder into your server and you are ready to go!
 
