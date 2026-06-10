@@ -184,7 +184,7 @@ if ($relativePath) {
     $parent = dirname(trim($relativePath, '/'));
     echo "<tr>
         <td><a href='?path=$parent'>
-        <img class='icon' src='/_autoindex/corner-left-up.svg'> Parent Directory</a></td>
+        <img class='icon' src='./_autoindex/corner-left-up.svg'> Parent Directory</a></td>
         <td></td><td></td>
     </tr>";
 }
@@ -201,14 +201,14 @@ foreach ($items as $item) {
     if (pathinfo($item, PATHINFO_EXTENSION) === 'php') continue;
 
     $fullPath = $currentDir . '/' . $item;
-    $url = ($relativePath ? $relativePath . '/' : '') . $item;
+    $url = ($relativePath ? trim($relativePath, '/') . '/' : '') . rawurlencode($item);
 	// hide LICENSE only in root
 	if ($currentDir === $baseDir && $item === 'LICENSE') continue;
     if (is_dir($fullPath)) {
         echo "<tr>
             <td>
                 <a href='?path=$url'>
-                <img class='icon' src='/_autoindex/folder-fill.svg'>
+                <img class='icon' src='./_autoindex/folder-fill.svg'>
                 $item
                 </a>
             </td>
@@ -218,8 +218,8 @@ foreach ($items as $item) {
     } else {
         echo "<tr>
             <td>
-                <a href='$url'>
-                <img class='icon' src='/_autoindex/file.svg'>
+                <a href="?path='.rawurlencode($url).'">
+                <img class='icon' src='./_autoindex/file.svg'>
                 $item
                 </a>
             </td>
