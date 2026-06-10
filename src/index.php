@@ -216,16 +216,16 @@ foreach ($items as $item) {
             <td>-</td>
         </tr>";
     } else {
-        echo "<tr>
-            <td>
-                <a href="?path='.rawurlencode($url).'">
-                <img class='icon' src='./_autoindex/file.svg'>
-                $item
-                </a>
-            </td>
-            <td>".formatDate($fullPath)."</td>
-            <td>".formatSize(filesize($fullPath))."</td>
-        </tr>";
+		echo "<tr>
+    		<td>
+        		<a href='?path=" . rawurlencode($url) . "'>
+        		<img class='icon' src='./_autoindex/file.svg'>
+        		$item
+        		</a>
+    		</td>
+    	<td>" . formatDate($fullPath) . "</td>
+    	<td>" . formatSize(filesize($fullPath)) . "</td>
+	</tr>";
     }
 }
 ?>
