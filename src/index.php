@@ -8,7 +8,7 @@ if ($currentDir === false || strpos($currentDir, $baseDir) !== 0) {
 }
 
 $relativePath = str_replace($baseDir, '', $currentDir);
-$items = scandir($currentDir);
+$items = is_dir($currentDir) ? scandir($currentDir) : [];
 
 function formatDate($file) {
     return date("Y-m-d H:i", filemtime($file));
@@ -189,7 +189,7 @@ if ($relativePath) {
     </tr>";
 }
 
-foreach ($items as $item) {
+foreach (($items ?: []) as $item) {
 
     if ($item === '.' || $item === '..') continue;
 
