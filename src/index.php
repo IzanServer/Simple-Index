@@ -8,7 +8,14 @@ if ($currentDir === false || strpos($currentDir, $baseDir) !== 0) {
 }
 
 $relativePath = str_replace($baseDir, '', $currentDir);
-$items = is_dir($currentDir) ? scandir($currentDir) : [];
+if (is_file($currentDir)) {
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . basename($currentDir) . '"');
+    readfile($currentDir);
+    exit;
+}
+
+$items = scandir($currentDir);
 
 function formatDate($file) {
     return date("Y-m-d H:i", filemtime($file));
@@ -201,7 +208,7 @@ foreach (($items ?: []) as $item) {
     if (pathinfo($item, PATHINFO_EXTENSION) === 'php') continue;
 
     $fullPath = $currentDir . '/' . $item;
-    $url = ($relativePath ? trim($relativePath, '/') . '/' : '') . rawurlencode($item);
+    $url = ($relativePath ? trim($relativePath, '/') . '/' : '') . $item;
 	// hide LICENSE only in root
 	if ($currentDir === $baseDir && $item === 'LICENSE') continue;
     if (is_dir($fullPath)) {
