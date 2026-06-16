@@ -1,6 +1,18 @@
 <?php
 $baseDir = realpath(__DIR__);
 $currentDir = realpath($baseDir . '/' . ($_GET['path'] ?? ''));
+if ($currentDir === false || strpos($currentDir, $baseDir) !== 0) {
+    http_response_code(403);
+    exit("Access denied");
+}
+
+if (is_file($currentDir)) {
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . basename($currentDir) . '"');
+    readfile($currentDir);
+    exit;
+}
+
 
 if ($currentDir === false || strpos($currentDir, $baseDir) !== 0) {
     http_response_code(403);
@@ -209,6 +221,7 @@ foreach (($items ?: []) as $item) {
 
     $fullPath = $currentDir . '/' . $item;
     $url = ($relativePath ? trim($relativePath, '/') . '/' : '') . $item;
+	$url = trim($url, '/');
 	// hide LICENSE only in root
 	if ($currentDir === $baseDir && $item === 'LICENSE') continue;
     if (is_dir($fullPath)) {
