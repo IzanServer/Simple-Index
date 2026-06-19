@@ -7,8 +7,19 @@ if ($currentDir === false || strpos($currentDir, $baseDir) !== 0) {
 }
 
 if (is_file($currentDir)) {
+
+    $size = filesize($currentDir);
+
+    if (ob_get_level()) {
+        ob_end_clean();
+    }
+
     header('Content-Type: application/octet-stream');
     header('Content-Disposition: attachment; filename="' . basename($currentDir) . '"');
+    header('Content-Length: ' . $size);
+    header('Accept-Ranges: bytes');
+    header('Cache-Control: public, max-age=3600');
+
     readfile($currentDir);
     exit;
 }
