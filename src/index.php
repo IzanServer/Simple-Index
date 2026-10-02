@@ -1,42 +1,49 @@
 <?php
 $baseDir = realpath(__DIR__);
 $currentDir = realpath($baseDir . '/' . ($_GET['path'] ?? ''));
-if ($currentDir === false || strpos($currentDir, $baseDir) !== 0) {
+
+// Security
+if ($currentDir === false || !str_starts_with($currentDir, $baseDir)) {
     http_response_code(403);
     exit("Access denied");
 }
 
+// if its a file, download
 if (is_file($currentDir)) {
 
+    $filename = basename($currentDir);
     $size = filesize($currentDir);
 
-    if (ob_get_level()) {
+    // Clean buffers
+    while (ob_get_level()) {
         ob_end_clean();
     }
 
+    // Force download
+    header('Content-Description: File Transfer');
     header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename="' . basename($currentDir) . '"');
+    header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
+    header('Content-Transfer-Encoding: binary');
     header('Content-Length: ' . $size);
     header('Accept-Ranges: bytes');
-    header('Cache-Control: public, max-age=3600');
+    header('Cache-Control: private, no-store, no-cache, must-revalidate');
+    header('Pragma: public');
+    header('Expires: 0');
+
+    // No zlib compression
+    @ini_set('zlib.output_compression', 'Off');
 
     readfile($currentDir);
     exit;
 }
 
-
-if ($currentDir === false || strpos($currentDir, $baseDir) !== 0) {
-    http_response_code(403);
-    exit("Access denied");
+// if its not a directory, give error
+if (!is_dir($currentDir)) {
+    http_response_code(404);
+    exit("Not found");
 }
 
 $relativePath = str_replace($baseDir, '', $currentDir);
-if (is_file($currentDir)) {
-    header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename="' . basename($currentDir) . '"');
-    readfile($currentDir);
-    exit;
-}
 
 $items = scandir($currentDir);
 
